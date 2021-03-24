@@ -1,0 +1,5 @@
+@layer components {
+  .mainContainer {
+    min-height: calc(100vh - theme('spacing.140'));
+  }
+}
