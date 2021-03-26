@@ -1,8 +1,8 @@
 import { memo, ReactNode } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import { SEO } from 'types/interfaces';
 import Header from './header';
+import Banner from './banner';
 import Footer from './footer';
 import styles from './index.module.css';
 
@@ -30,14 +30,7 @@ const Layout = ({ children, seo, pageTitle, pageSize = 'regular' }: LayoutProps)
         <meta httpEquiv="Cache-Control" content="no-siteapp,no-transform" />
       </Head>
       <Header />
-      <section className="h-80 flex-center bg-gradient-to-r from-yellow-400 to-red-500 dark:from-purple-900 dark:to-indigo-900 relative mb-12">
-        <h1 className="text-white text-center leading-normal">{pageTitle}</h1>
-        <div className="w-full max-w-5xl absolute bottom-0">
-          <div className="absolute -bottom-12 left-6 w-24 h-24 border-4 rounded-full border-white overflow-hidden">
-            <Image src="/avatar.jpg" layout="fill" />
-          </div>
-        </div>
-      </section>
+      <Banner title={pageTitle} />
       <main className="wrapper">
         <div className={`w-full ${styles.mainContainer} ${sizeMap[pageSize]}`}>{children}</div>
       </main>

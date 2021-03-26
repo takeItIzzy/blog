@@ -34,7 +34,6 @@ const tagDesc: {
 ];
 
 const Posts = ({ allPostsData, allPostTags }: { allPostsData: MD[]; allPostTags: string[] }) => {
-  console.log(allPostsData, allPostTags);
   const [posts, setPosts] = useState(allPostsData);
 
   const resetFilter = useCallback(() => {

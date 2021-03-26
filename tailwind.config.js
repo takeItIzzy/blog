@@ -9,12 +9,30 @@ module.exports = {
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
+      zIndex: {
+        '-10': '-10',
+      },
       spacing: {
         140: '35rem',
       },
       colors: {
         'red-base': redBase,
         'theme-color-light': themeColorLight,
+      },
+      keyframes: {
+        'banner-title': {
+          '0%': {
+            opacity: 0,
+            transform: 'scale(0.95)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'scale(1)',
+          },
+        },
+      },
+      animation: {
+        'banner-title': '2s ease-out 0s 1 normal none running banner-title',
       },
       typography: (_theme) => ({
         DEFAULT: {

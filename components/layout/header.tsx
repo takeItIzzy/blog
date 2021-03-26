@@ -32,7 +32,7 @@ const Header = () => {
 
   return (
     <nav
-      className={classnames('h-20 wrapper fixed top-0 z-10 transition-all duration-300', {
+      className={classnames('h-20 wrapper fixed top-0 z-10 transition-all duration-300 z-30', {
         ['bg-transparent text-white']: isScrollTop,
         ['bg-white text-black dark:bg-gray-700 dark:text-white']: !isScrollTop,
       })}
