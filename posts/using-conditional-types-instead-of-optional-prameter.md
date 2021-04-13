@@ -19,7 +19,7 @@ referer:
 
 首先很容易想到的是可选属性——
 
-```tsx
+```typescript
 enum StoreType {
   Official = 'official',
   ThirdParty = 'thirdParty',
@@ -37,7 +37,7 @@ interface Store {
 
 此时就要用到条件类型了，对于上面的场景，我们可以写成这样——
 
-```tsx
+```typescript
 interface BaseStore {
   id: number;
   name: string;
@@ -63,7 +63,7 @@ type Store<T extends StoreType> = T extends StoreType.Official
 
 在实际应用时，你可以为使用该类型的函数、hooks、组件等传入一个类型，从而使用不同的 `Store` 类型——
 
-```tsx
+```typescript
 const useStore = <T extends StoreType>(type: T): Store<T> => {
   const baseStore: BaseStore = {
     id: 1,
