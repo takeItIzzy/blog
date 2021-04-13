@@ -1,4 +1,13 @@
-# 使用条件类型来替代 interface 的可选属性吧！
+---
+title: '使用条件类型来替代 interface 的可选属性吧！'
+description: '在 typescript 中如何使用条件类型替代 interface 可选属性'
+keywords: 'typescript,前端,条件类型,可选属性'
+date: '2021-04-13T13:32:05+08:00'
+tag: 'experience'
+referer:
+- name: 'typescript 官网 - 条件类型'
+  href: 'https://www.typescriptlang.org/docs/handbook/2/conditional-types.html'
+---
 
 `interface` 可以说是 `TypeScript` 最常用的类型之一了。它简单又功能强大，尤其是可选属性的存在，让开发者在面对复杂场景下的数据结构时，可以非常方便地定义接口。
 
