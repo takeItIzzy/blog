@@ -11,5 +11,5 @@ export interface MD extends SEO {
   date: string;
   contentHtml: string;
   tag: Tag;
-  referer: { name: string; href: string }[];
+  referer?: { name: string; href: string }[];
 }

@@ -26,17 +26,21 @@ const Article = ({ postData }: { postData: MD }) => {
           </MyLink>{' '}
           交流，请勿抄袭❤
         </p>
-        <br />
-        <h3>相关链接：</h3>
-        <ul className="ml-6">
-          {postData.referer.map((item) => (
-            <li key={item.href}>
-              <MyLink href={item.href} type="link">
-                {item.name}
-              </MyLink>
-            </li>
-          ))}
-        </ul>
+        {postData.referer && (
+          <>
+            <br />
+            <h3>相关链接：</h3>
+            <ul className="ml-6">
+              {postData.referer.map((item) => (
+                <li key={item.href}>
+                  <MyLink href={item.href} type="link">
+                    {item.name}
+                  </MyLink>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </footer>
     </article>
   );
