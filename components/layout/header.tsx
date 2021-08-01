@@ -1,34 +1,37 @@
-import { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import MyLink from 'components/myLink';
 import LightMode from 'public/icons/light_mode.svg';
 import DarkMode from 'public/icons/dark_mode.svg';
 import ThemeContext from 'theme/ThemeContext';
 
-const Header = () => {
+const tabs = [
+  {
+    label: '博客',
+    goto: '/posts',
+  },
+];
+
+const useScrollTop = () => {
   const [isScrollTop, setIsScrollTop] = useState(true);
 
-  const { dark, toggleDark } = useContext(ThemeContext);
-
-  const tabs = useMemo(
-    () => [
-      {
-        label: '博客',
-        goto: '/posts',
-      },
-    ],
-    []
-  );
-
-  const handleScroll = useCallback(() => {
+  const handleScroll = () => {
     setIsScrollTop(window.pageYOffset === 0);
-  }, []);
+  };
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  return isScrollTop;
+};
+
+const Header = () => {
+  const { dark, toggleDark } = useContext(ThemeContext);
+
+  const isScrollTop = useScrollTop();
 
   return (
     <nav
@@ -58,4 +61,4 @@ const Header = () => {
   );
 };
 
-export default memo(Header);
+export default Header;

@@ -3,7 +3,7 @@ import { GetStaticProps } from 'next';
 import { getAllPostTags, getSortedPostsData } from 'libs/posts';
 import { MD, Tag } from 'types/interfaces';
 import ArticleDirector from '../../components/articleDirector';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const tagMap: Record<Tag, string> = {
   tutorial: '📖',
@@ -33,23 +33,26 @@ const tagDesc: {
   },
 ];
 
+const usePosts = (defaultPosts: MD[]) => {
+  const [posts, setPosts] = useState(defaultPosts);
+
+  const resetFilter = () => {
+    setPosts(defaultPosts);
+  };
+
+  const filterTag = (tag: Tag) => {
+    setPosts(defaultPosts.filter((item) => item.tag === tag));
+  };
+
+  return {
+    posts,
+    resetFilter,
+    filterTag,
+  };
+};
+
 const Posts = ({ allPostsData, allPostTags }: { allPostsData: MD[]; allPostTags: string[] }) => {
-  const [posts, setPosts] = useState(allPostsData);
-
-  const resetFilter = useCallback(() => {
-    setPosts(allPostsData);
-  }, [allPostsData]);
-
-  const filterTag = useCallback<(tag: Tag) => void>(
-    (tag) => {
-      setPosts(allPostsData.filter((item) => item.tag === tag));
-    },
-    [allPostsData]
-  );
-
-  useEffect(() => {
-    resetFilter();
-  }, [resetFilter]);
+  const { posts, resetFilter, filterTag } = usePosts(allPostsData);
 
   return (
     <Layout
