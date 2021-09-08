@@ -7,6 +7,10 @@ const MyBlog = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
+        <meta
+          name="google-site-verification"
+          content="9fkYh9Ohe5LfvsJazovbG9dF4mhToXWKEWhbOF_LJpc"
+        />
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta
