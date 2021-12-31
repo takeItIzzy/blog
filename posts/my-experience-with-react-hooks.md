@@ -23,7 +23,7 @@ tag: 'experience'
 - 依赖数组中传递我希望监听的数据，当其发生改变时执行 useEffect() 中的逻辑。
 - useEffect() 中的逻辑不受依赖数组影响，不论写不写依赖数组，执行 useEffect() 都不会有什么区别，只是写了依赖能让 useEffect() 少执行几次。
 
-react 文档中有一句话说得很好，**你应该将 useEffect() 的依赖当成语义的保证，而不是性能优化的条件。**这句话在 react 的文档上于 useMemo() 的介绍处被提到，但在 useEffect() 中同样适用，事实上，人们更容易在 useEffect() 中犯这样的错误。
+react 文档中有一句话说得很好，**你应该将 useEffect() 的依赖当成语义的保证，而不是性能优化的条件**。这句话在 react 的文档上于 useMemo() 的介绍处被提到，但在 useEffect() 中同样适用，事实上，人们更容易在 useEffect() 中犯这样的错误。
 
 useEffect() 从语义上说，就是组件每次渲染都要执行一遍的副作用，表示**每次组件 render 之后，以及组件卸载时希望它做什么**。如果不写依赖数组，那 useEffect() 会在每次组件渲染后都执行；然后通过传入一个依赖数组来决定什么时候让它避免无意义的执行，这叫做**作为性能优化的条件**。
 
@@ -53,7 +53,7 @@ useEffect(() => {
 
 但是更多情况下，useEffect() 是被滥用了的。其实 useEffect() 本身就是个不那么常用的 api。可能画个图会更一目了然——
 
-![useEffect() 两种使用思想对比](/posts/my-experience-with-react-hooks-3.jpeg)
+![useEffect() 两种使用思想对比](/posts/my-experience-with-react-hooks-3.png)
 
 大圆是代码中对于是否该用 useEffect() 有争议的场景，小圆是两种思想下都可以使用 useEffect() 解决的需求，也就是上面提到的“普适”逻辑。而剩余的部分，将 useEffect() 作为监听器的思想还是会用 useEffect() 实现，此时就会有依赖无法写全的问题。如果克制使用 useEffect()，仅在小圆的场景下使用 useEffect()，而其余场景在事件中处理，那就不会面对依赖写不全的问题。这里的“事件”不一定就是 onXxx，从事件发起，到变更的状态被更新到 react，这中间有很大的空间可以操作，比如写在 reducer 里。
 
