@@ -1,7 +1,7 @@
 ---
 title: 'react 中的状态管理（一）——社区状态管理方案浅析'
 description: '我对 react 状态管理的看法，以及如何实现一个状态管理库'
-keywords: 'javascript,前端,软件工程,开发设计'
+keywords: 'javascript,前端,react,状态管理,state management'
 date: '2022-08-17T15:01:30+08:00'
 tag: 'tutorial'
 ---
@@ -9,6 +9,11 @@ tag: 'tutorial'
 # 写在前面
 
 这将会是一篇系列博文，在本文中，我会谈一谈我对现今社区中流行的状态管理方案的看法，在后续文章中，我会介绍如何实现一个状态管理库。
+
+## 目录
+
+- [react 中的状态管理（一）——社区状态管理方案浅析](/posts/state-management-in-react-1)
+- [react 中的状态管理（二）—— los 的核心 api 设计](/posts/state-management-in-react-2)
 
 # 为什么我们需要状态管理库
 
@@ -52,4 +57,4 @@ react 自己也提供了状态管理的解决方案，那就是 useContext + use
 
 我将它定位为维护除 react-query 状态之外那剩余的一点状态的工具，是补全 react 状态管理的最后一步，它的意义在于成为更好的 context。它非常轻量，因为不需要提供网络请求的支持，只提供一个外部数据源，以及一系列更新数据源的方法。同时它可以按照我的生产需求方便地扩展 API。同时它需要能够很好地与 react-query 配合，比如为将 react-query 请求到的结果存储为表单的默认值这种场景提供便利。
 
-在下一篇文章中我会介绍这个状态管理库的 api 设计。
+在 [下一篇文章](/posts/state-management-in-react-2) 中我会介绍这个状态管理库的 api 设计。
