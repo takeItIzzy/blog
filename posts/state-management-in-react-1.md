@@ -1,6 +1,6 @@
 ---
 title: 'react 中的状态管理（一）——社区状态管理方案浅析'
-description: '我对 react 状态管理的看法，以及如何实现一个状态管理库'
+description: '我对 react 社区状态管理的看法'
 keywords: 'javascript,前端,react,状态管理,state management'
 date: '2022-08-17T15:01:30+08:00'
 tag: 'tutorial'
@@ -14,7 +14,8 @@ tag: 'tutorial'
 
 - --> [react 中的状态管理（一）——社区状态管理方案浅析](/posts/state-management-in-react-1)
 - [react 中的状态管理（二）——los 的核心 api 设计](/posts/state-management-in-react-2)
-- [react 中的状态管理（三）——los store 的数据结构和响应系统原理](/posts/state-management-in-react-3)
+- [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
+- [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
 
 # 为什么我们需要状态管理库
 

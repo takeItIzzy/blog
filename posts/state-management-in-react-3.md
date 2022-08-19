@@ -1,6 +1,6 @@
 ---
-title: 'react 中的状态管理（三）—— los store 的数据结构和响应系统原理'
-description: '我理想中的状态管理库的 store 的数据结构和响应系统原理'
+title: 'react 中的状态管理（三）——响应系统原理'
+description: '响应系统的实现原理，以及 react 下响应系统的实现方式'
 keywords: 'javascript,typescript,前端,react,状态管理,state management,tearing'
 date: '2022-08-19T12:03:00+08:00'
 tag: 'tutorial'
@@ -10,15 +10,10 @@ tag: 'tutorial'
 
 - [react 中的状态管理（一）——社区状态管理方案浅析](/posts/state-management-in-react-1)
 - [react 中的状态管理（二）——los 的核心 api 设计](/posts/state-management-in-react-2)
-- --> [react 中的状态管理（三）——los store 的数据结构和响应系统原理](/posts/state-management-in-react-3)
+- --> [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
+- [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
 
-在 [上一篇文章](/posts/state-management-in-react-2) 中，我谈到了我理想中的状态管理库的核心 api 设计，并为这个库取名为 `los`，意为 `last one step`。这篇文章中，我会介绍 los 的数据结构，以及如何实现 los 的核心能力——响应系统。
-
-# store 的数据结构
-
-los 的原子状态由 `atom()` 方法声明，并且 los 提供的 hooks 也都接受 `atom()` 返回的状态作为标识。所以我将使用 Map 这种数据结构来定义 store，因为 Map 可以使用对象作为 key，将原子状态本身作为 key，在未来读取值和更新值时会非常方便。value 则存储了原子状态的最新值，以及在 atom() 方法中传入的配置项。所以，store 的数据结构就是这个样子：
-
-![store 的数据结构](/posts/state-management-in-react-3-3.png)
+在 [上一篇文章](/posts/state-management-in-react-2) 中，我谈到了我理想中的状态管理库的核心 api 设计，并为这个库取名为 `los`，意为 `last one step`。这篇文章中，我会介绍 los 作为一个状态管理库的核心能力——响应系统的原理。
 
 # 响应式数据
 
@@ -94,4 +89,4 @@ react 的内部状态是没有撕裂现象的，比如 useState、useReducer，r
 
 本文介绍了 store 的数据结构和响应系统的原理，以及在 react17 及以下版本中，状态管理库实现响应系统的通用方法；然后解释了为什么这样的方法在 react18 中会有问题，以及 react 做出什么样的努力来解决这个问题。
 
-在 [下一篇文章](/posts/state-management-in-react-4) 中，我会介绍 `atom()` 方法的实现，以及如何基于 `useSyncExternalStore` 实现一个响应系统，即 `useLosValue()` 和 `useSetLosState()` 的实现。
+在 [下一篇文章](/posts/state-management-in-react-4.md) 中，我会介绍如何注册原子类型到 store 中，即 store 与 `atom()` 方法的实现，以及如何基于 `useSyncExternalStore` 实现一个响应系统，即 `useLosValue()` 和 `useSetLosState()` 的实现。

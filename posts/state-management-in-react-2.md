@@ -1,6 +1,6 @@
 ---
 title: 'react 中的状态管理（二）—— los 的核心 api 设计'
-description: '我理想中的状态管理库的核心 api 设计'
+description: '我理想中的状态管理库 los 的核心 api 设计'
 keywords: 'javascript,typescript,前端,react,状态管理,state management'
 date: '2022-08-18T20:05:30+08:00'
 tag: 'tutorial'
@@ -10,7 +10,8 @@ tag: 'tutorial'
 
 - [react 中的状态管理（一）——社区状态管理方案浅析](/posts/state-management-in-react-1)
 - --> [react 中的状态管理（二）——los 的核心 api 设计](/posts/state-management-in-react-2)
-- [react 中的状态管理（三）—— los store 的数据结构和响应系统原理](/posts/state-management-in-react-3)
+- [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
+- [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
 
 在 [上一篇文章](/posts/state-management-in-react-1) 中，我谈到了我理想中的状态管理库的定位——辅助 react-query、替代 useContext。这篇文章我会介绍它的核心 api。
 
@@ -197,4 +198,4 @@ const Foo = () => {
 
 它的目的是配合 react-query，作为 react 项目状态管理的最后一步，所以我给它取名 `los`，意为 `last one step`。
 
-在 [下一篇文章](/posts/state-management-in-react-3) 中，我会介绍 los 的 store 的数据结构，以及一个状态管理库的核心能力——响应系统。
+在 [下一篇文章](/posts/state-management-in-react-3) 中，我会介绍一个状态管理库的核心能力——响应系统。
