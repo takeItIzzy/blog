@@ -245,4 +245,4 @@ const useLosState = <T, Action = void>(state: Atom<T, Action>): [T, SetLosState<
 
 # 总结
 
-这篇文章中，我们通过 `atom()` 方法与 store 的设计实现了状态的注册，还通过 `useLosValue` 和 `useSetLosState` 实现了响应系统。在 [下一篇文章](/posts/state-management-in-react-5) 中，我会介绍在 los 中使用 reducer，以及为 los 提供不缓存的能力以达到和 context 类似的行为。
+这篇文章中，我们通过 `atom()` 方法与 store 的设计实现了状态的注册，还通过 `useLosValue` 和 `useSetLosState` 实现了响应系统。在 [下一篇文章](/posts/state-management-in-react-5) 中，我会为 los 提供不缓存的能力以达到和 context 类似的行为、使用 reducer，以及为 los 提供更方便地与 react-query 结合的能力。
