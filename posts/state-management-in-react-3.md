@@ -88,4 +88,8 @@ react 的内部状态是没有撕裂现象的，比如 useState、useReducer，r
 
 为了解决这个问题，react 推出了一个名为 `useSyncExternalStore` 的 hook。从名字就能看出来，其实这个 hook 就是让外部状态继续使用 react17 及以下的同步渲染模式更新状态，这样页面就不会发生撕裂现象。
 
+# 总结
+
+本文介绍了 store 的数据结构和响应系统的原理，以及在 react17 及以下版本中，状态管理库实现响应系统的通用方法；然后解释了为什么这样的方法在 react18 中会有问题，以及 react 做出什么样的努力来解决这个问题。
+
 在 [下一篇文章](/posts/state-management-in-react-4) 中，我会介绍 `atom()` 方法的实现，以及如何基于 `useSyncExternalStore` 实现一个响应系统，即 `useLosValue()` 和 `useSetLosState()` 的实现。
