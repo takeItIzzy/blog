@@ -9,9 +9,10 @@ tag: 'tutorial'
 # 系列文章
 
 - [react 中的状态管理（一）——社区状态管理方案浅析](/posts/state-management-in-react-1)
-- [react 中的状态管理（二）—— los 的核心 api 设计](/posts/state-management-in-react-2)
+- --> [react 中的状态管理（二）——los 的核心 api 设计](/posts/state-management-in-react-2)
+- [react 中的状态管理（三）—— los store 的数据结构和响应系统原理](/posts/state-management-in-react-3)
 
-在 [上一篇文章](/posts/state-management-in-react-1) 中，我谈到了我理想中的状态管理库的定位——辅助 react-query、替代 useContext。这篇文章我会介绍它的 api。
+在 [上一篇文章](/posts/state-management-in-react-1) 中，我谈到了我理想中的状态管理库的定位——辅助 react-query、替代 useContext。这篇文章我会介绍它的核心 api。
 
 在想动手造一个轮子之前，要先想好该怎么用这个轮子，把目的思考清楚，再想怎么实现才能做到有的放矢。
 
@@ -192,8 +193,8 @@ const Foo = () => {
 
 # 总结
 
-上面就是我对我理想中的状态管理库的最核心的 api 设计，原子化、有良好的类型支持、拥有与 context 类似的能力从而可以替代 context 的使用、可以尽量让组件只专注于 UI，逻辑维护在另外的地方，并且可以方便地与 react-query 结合。
+上面就是我对我理想中的状态管理库的最核心的 api 的设计，原子化、有良好的类型支持、拥有与 context 类似的能力从而可以替代 context 的使用、可以尽量让组件只专注于 UI，逻辑维护在另外的地方，并且可以方便地与 react-query 结合。
 
 它的目的是配合 react-query，作为 react 项目状态管理的最后一步，所以我给它取名 `los`，意为 `last one step`。
 
-下一篇文章，我会介绍如何实现这些核心概念。
+在 [下一篇文章](/posts/state-management-in-react-3) 中，我会介绍 los 的 store 的数据结构，以及一个状态管理库的核心能力——响应系统。
