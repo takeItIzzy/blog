@@ -13,7 +13,7 @@ tag: 'tutorial'
 - [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
 - --> [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
 
-在 [上一篇文章](/posts/state-management-in-react-3) 中，我介绍了 los 的 store 的数据结构，以及响应系统的实现原理。在本文中，我会介绍如何将原子状态注册到 store 中，以及 los 的响应系统——也就是 `useLosValue` 和 `useSetLosState`——的具体实现。
+在 [上一篇文章](/posts/state-management-in-react-3) 中，我介绍了响应系统的实现原理。在本文中，我会介绍如何将原子状态注册到 store 中，以及 los 的响应系统——也就是 `useLosValue` 和 `useSetLosState`——的具体实现。
 
 # 状态注册
 
@@ -57,6 +57,7 @@ class Atom<T, Action = void> {
 ```ts
 /* store 每一项 value 的类型 */
 interface StoreItemValue {
+  /* 原子状态的最新值 */
   value: any;
 }
 
@@ -70,13 +71,14 @@ const store: Map<Atom<any, any>, StoreItemValue> = new Map();
 1. 将当前状态注册到 store 中。
 2. 返回这个原子状态，供其它 los 的 api 使用。这个原子状态中，记录了 `atom()` 接受的配置项。
 
-在上面定义 `store` 的时候，对于 store 每一项的 value，其实属性没有写完整。在上一篇文章中我有提到过，需要把数据存入一个桶中，这是实现响应式数据的关键。所以，我们为 store 每一项的 value 添加这个桶属性，每个桶只关心自己所在的原子状态的订阅情况。这个桶使用 Set 类型，这主要是为了 Set 的去重能力。桶的每一项都是一个函数，记录了有哪些组件订阅了当前这个原子状态，你可以参照上一篇文章中提到的为计时器递增的 `subscribe` 方法。
+在上面定义 `store` 的时候，对于 store 每一项的 value，其实属性没有写完整。在上一篇文章中我有提到过，需要把数据存入一个桶中，这是实现响应式数据的关键。所以，我们为 store 每一项的 value 添加这个桶属性，每个桶只关心自己所在的原子状态的订阅情况。这个桶使用 Set 类型，这主要是为了利用 Set 的去重能力。桶的每一项都是一个函数，记录了有哪些组件订阅了当前这个原子状态，你可以参照上一篇文章中提到的能使计时器递增的 `subscribe` 方法。
 
 ```ts
 type SubscribeFn = () => void;
 type Bucket = Set<SubscribeFn>;
 /* store 每一项 value 的类型 */
 interface StoreItemValue {
+  /* 原子状态的最新值 */
   value: any;
   /* 依赖收集桶 */
   bucket: Bucket;
@@ -85,7 +87,7 @@ interface StoreItemValue {
 const store: Map<Atom<any, any>, StoreItemValue> = new Map();
 ```
 
-另外，每个原子状态还需要有一个更新订阅的方法，用于向桶中添加和移除订阅者，你可以参照上一篇文章中提到的 useEffect 的作用。这个方法接受上面提到的类似上篇文章中递增计时器的 `subscribe` 方法的一个函数，并将其存入 bucket，也返回一个函数，这个被返回的函数用于取消订阅，你可以参照上一篇文章中提到的 useEffect 的返回值。
+另外，每个原子状态还需要有一个更新订阅的方法，用于向桶中添加和移除订阅者，你可以参照上一篇文章中提到的 useEffect 的作用。这个方法接受上面提到的类似上篇文章中递增计时器的 `subscribe` 方法的一个函数，并将其存入 bucket，也返回一个函数，这个被返回的函数用于取消订阅，等效于上一篇文章中提到的 useEffect 的返回值。
 
 ```ts
 type SubscribeFn = () => void;
@@ -93,7 +95,9 @@ type Bucket = Set<SubscribeFn>;
 type Subscribe = (subscribeFn: SubscribeFn) => () => void;
 /* store 每一项 value 的类型 */
 interface StoreItemValue {
+  /* 原子状态的最新值 */
   value: any;
+  /* 依赖收集桶 */
   bucket: Bucket;
   /* 订阅方法 */
   subscribe: Subscribe;
@@ -119,7 +123,7 @@ const atom = <T, Action = void>(
   const bucket: Bucket = new Set();
   
   // 这里的 subscribeFn 从何而来，一会儿会介绍到 
-  const subscribe = (subscribeFn) => {
+  const subscribe: Subscribe = (subscribeFn: SubscribeFn) => {
     bucket.add(subscribeFn);
 
     return () => {
@@ -154,9 +158,9 @@ const atom = <T, Action = void>(
 
 我已经介绍过 react18 以前的方案了，现在来说说 react18 提供的 `useSyncExternalStore` hook。
 
-这个 hook 是以前那种 forceUpdate 的更新方式的替代品，它保证了外部 store 在 react 中不会出现撕裂问题。它接受两个参数：`subscribe` 方法和 `getSnapshot` 方法。
+这个 hook 是以前那种使用计数器（或别的类似的东西）forceUpdate 的更新方式的替代品，它保证了外部 store 在 react 中不会出现撕裂问题。它接受两个参数：`subscribe` 方法和 `getSnapshot` 方法。
 
-`subscribe` 方法其实就是在 `atom()` 中声明的那个 `subscribe` 方法，`useSyncExternalStore` 会在合适的时机调用 `subscribe`，并向 `subscribe` 传入 `subscribeFn`，只要状态管理库调用这个 `subscribeFn` 就会让组件重新渲染。现在你就知道 `atom()` 中声明的 `sucscribeFn` 是从哪里来的了吧？
+`subscribe` 方法其实就是在 `atom()` 中声明的那个 `subscribe` 方法，`useSyncExternalStore` 会在合适的时机调用 `subscribe`，并向 `subscribe` 传入 `subscribeFn`，只要状态管理库调用这个 `subscribeFn` 就会让组件重新渲染。现在你就知道 `atom()` 中声明的 `subscribeFn` 是从哪里来的了吧？
 
 `getSnapshot` 其实返回的就是 store 的最新值。但由于 los 是个原子状态库，每个原子状态都是独立的，所以 `getSnapshot` 不需要返回整个 store 的最新值，而只是返回一个原子状态的最新值。但 这个最新值必须是稳定的，这也是它名为 snapshot 的原因，所以我们需要为其包裹 useCallback，并且判断新旧值是否相等，以免返回引用类型时每次渲染引用都不相同。
 
@@ -182,7 +186,7 @@ const useLosValue = <T, Action = void>(state: Atom<T, Action>): T => {
 };
 ```
 
-这样，我们就实现了 `useLosValue` 需要达成的两个目的。并且通过泛型，我们也实现了由接受的原子状态的类型推导出返回值的类型。注意，在 `useLosValue` 返回之前，我使用了 `useDebugValue()` 这个 hook，这将在 react devTools 里打印出这个值，方便开发者调试。
+这样，我们就实现了 `useLosValue` 需要达成的两个目的。并且通过泛型，我们也实现了由接受的原子状态的类型推导出返回值的类型。在 `useLosValue` 返回之前，我使用了 `useDebugValue()` 这个 hook，这将在 react devTools 里打印出这个值，方便开发者调试。
 
 **注意：其实除了这两个参数以外，useSyncExternalStore 还接受额外的参数，主要是用于服务端渲染，与这次的探讨关联性不大，就不多做介绍了。**
 

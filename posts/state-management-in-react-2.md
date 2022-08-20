@@ -157,7 +157,7 @@ const useReactQuery = (queryKey, queryFn, options) => {
         options.onSuccessOnce?.(data);
         setFetched(true);
       }
-      options.onSuccess(data);
+      options.onSuccess?.(data);
     },
     ...(omit(options, ['onSuccessOnce', 'onSuccess'])),
   })
@@ -172,7 +172,7 @@ const queryFn = async () => {
   if (!requestSuccess(response)) {
     throw new Error('请求失败！');
   }
-  initStoreState(response); // 在 queryFn 中对值进行初始化
+  initStoreState(atomState, response); // 在 queryFn 中对值进行初始化
   return response;
 }
 const useQueryData = () => useQuery(['queryKey'], queryFn);
