@@ -13,6 +13,7 @@ tag: 'tutorial'
 - [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
 - --> [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
 - [react 中的状态管理（五）——实现 los 其余主要 api](/posts/state-management-in-react-5)
+- [react 中的状态管理（六）——扩展 los 的 api](/posts/state-management-in-react-6.md)
 
 在 [上一篇文章](/posts/state-management-in-react-3) 中，我介绍了响应系统的实现原理。在本文中，我会介绍如何将原子状态注册到 store 中，以及 los 的响应系统——也就是 `useLosValue` 和 `useSetLosState`——的具体实现。
 

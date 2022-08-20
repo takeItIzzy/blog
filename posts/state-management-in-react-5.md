@@ -13,6 +13,7 @@ tag: 'tutorial'
 - [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
 - [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
 - --> [react 中的状态管理（五）——实现 los 其余主要 api](/posts/state-management-in-react-5)
+- [react 中的状态管理（六）——扩展 los 的 api](/posts/state-management-in-react-6.md)
 
 在 [上一篇文章](/posts/state-management-in-react-4) 中，我介绍了 los 中状态注册和响应系统的实现。在本文中，我会介绍剩余主要 api 的具体实现，包括不缓存的 atom、reducer 的使用，以及在 queryFn 中注册状态。
 
@@ -164,3 +165,7 @@ interface StoreItemValue {
 然后在 `initLosState` 中判断 hasInit 的值，只有为 false 才执行接下来的逻辑，并且执行完将 flag 设置为 true 即可。
 
 除了 `initLosState`，`setLosState` 和 `losDispatch` 中在更新值时，也需要无脑把 hasInit 设为 true，因为当一个状态已经开始更新值了，那它肯定已经是初始化完成的状态了。
+
+# 总结
+
+本文介绍了围绕 atom 的其它一些主要功能的实现，在 [下一篇文章](/posts/state-management-in-react-6.md) 中，我会介绍除了 atom，我还为 los 开发了哪些 api，以及它们的实现思路是怎样的。
