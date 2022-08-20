@@ -168,4 +168,4 @@ interface StoreItemValue {
 
 # 总结
 
-本文介绍了围绕 atom 的其它一些主要功能的实现，在 [下一篇文章](/posts/state-management-in-react-6.md) 中，我会介绍除了 atom，我还为 los 开发了哪些 api，以及它们的实现思路是怎样的。
+本文介绍了围绕 atom 的其它一些主要功能的实现，在 [下一篇文章](/posts/state-management-in-react-6) 中，我会介绍除了 atom，我还为 los 开发了哪些 api，以及它们的实现思路是怎样的。
