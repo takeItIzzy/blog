@@ -12,6 +12,7 @@ tag: 'tutorial'
 - [react 中的状态管理（二）——los 的核心 api 设计](/posts/state-management-in-react-2)
 - --> [react 中的状态管理（三）——响应系统原理](/posts/state-management-in-react-3)
 - [react 中的状态管理（四）——实现 los 状态注册和响应系统](/posts/state-management-in-react-4)
+- [react 中的状态管理（五）——实现 los 其余主要 api](/posts/state-management-in-react-5)
 
 在 [上一篇文章](/posts/state-management-in-react-2) 中，我谈到了我理想中的状态管理库的核心 api 设计，并为这个库取名为 `los`，意为 `last one step`。这篇文章中，我会介绍 los 作为一个状态管理库的核心能力——响应系统的原理。
 
