@@ -8,23 +8,22 @@ const MyLink = ({
   className,
   href,
   type = 'route',
-  button = false,
   customColor = false,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
   type?: 'route' | 'link';
-  button?: boolean;
   customColor?: boolean;
 }) => {
   return options(
     {
       route: () => (
-        <Link href={href}>
-          <a className={`hover:underline ${!customColor && 'text-red-base'} ${className}`}>
-            {children}
-          </a>
+        <Link
+          href={href}
+          className={`hover:underline ${!customColor && 'text-red-base'} ${className}`}
+        >
+          {children}
         </Link>
       ),
       link: () => (

@@ -10,6 +10,10 @@ const tabs = [
     label: '博客',
     goto: '/posts',
   },
+  {
+    label: '算法可视化',
+    goto: '/algorithm',
+  },
 ];
 
 const useScrollTop = () => {
@@ -44,9 +48,9 @@ const Header = () => {
         <MyLink href="/" className="pr-4 mr-auto" customColor>
           <span className="text-2xl">首页</span>
         </MyLink>
-        <ul className="px-4">
+        <ul className="px-4 flex items-center">
           {tabs.map((tab) => (
-            <li key={tab.goto}>
+            <li className="ml-4" key={tab.goto}>
               <MyLink href={tab.goto} customColor>
                 <span>{tab.label}</span>
               </MyLink>
