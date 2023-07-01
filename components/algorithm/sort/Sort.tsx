@@ -142,13 +142,14 @@ export default function Sort() {
                  * 应该只让新的 backItem 有颜色渐变，而 frontItem 颜色不需要渐变，以体现出 frontItem 未发生变化
                  */
                 return `rgba(100, 149, 237, ${
-                  renderChartCtx.frontItemPrevIndex === renderChartCtx.frontItemCurrIndex
+                  renderChartCtx.frontItemPrevIndex === renderChartCtx.frontItemCurrIndex ||
+                  renderChartCtx.isSwapping // 交换位置时，不需要渐变
                     ? '1'
                     : alpha
                 })`;
               }
               if (value === renderChartCtx.backItem) {
-                return `rgba(0, 139, 139, ${alpha})`;
+                return `rgba(0, 139, 139, ${renderChartCtx.isSwapping ? '1' : alpha})`;
               }
               // 已经排序完成的柱形，第一次绘制时有渐变效果，后续绘制时不再有渐变效果
               return `rgba(205, 92, 92, ${index === renderChartCtx.endPosition - 1 ? alpha : '1'})`;
@@ -186,7 +187,7 @@ export default function Sort() {
 
   return (
     <div className="App">
-      <button onClick={sort}>click</button>
+      <button onClick={sort}>click</button>&nbsp;
       <button
         onClick={() => {
           setList(l);
