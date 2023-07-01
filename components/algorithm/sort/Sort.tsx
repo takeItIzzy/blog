@@ -75,12 +75,6 @@ export default function Sort() {
     canvas.height = 300;
     canvas.width = 400;
 
-    /**
-     * 排序终点线的位置：
-     * 终点之前有几个 bar，每个 bar 加上其后的间距，最后一个 bar 的间距只算一半
-     */
-    const endLinePos = renderChartCtx.endPosition * (barWidth + barSpacing) - barSpacing / 2;
-
     // 为正在做比较的两个元素添加着色时的透明度动画
     let alpha = 0;
     // 为正在做比较的两个元素添加位移动画
@@ -170,11 +164,6 @@ export default function Sort() {
           ctx.textAlign = 'center';
           ctx.fillText(value.toString(), x + barWidth / 2, y - 5);
         });
-
-        ctx.moveTo(endLinePos, 20); // 设置起始点坐标
-        ctx.lineTo(endLinePos, 300); // 设置结束点坐标
-        ctx.strokeStyle = '#483D8B';
-        ctx.stroke(); // 绘制直线
 
         animateId = requestAnimationFrame(drawBars);
       } else {
