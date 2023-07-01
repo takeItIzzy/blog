@@ -12,6 +12,32 @@ const swap = (array: number[], currIndex: number, nextIndex: number) => {
   return array;
 };
 
+interface P {
+  x: number;
+  y: number;
+}
+// 定义一个三次贝塞尔曲线函数
+const cubicBezier = (p1: P, p2: P, t: number) => {
+  const p0 = { x: 0, y: 0 };
+
+  const oneMinusT = 1 - t;
+  const oneMinusTSquared = oneMinusT * oneMinusT;
+  const tSquared = t * t;
+
+  // y
+  return oneMinusTSquared * p0.y + 2 * oneMinusT * t * p1.y + tSquared * p2.y;
+};
+
+// 定义一个函数，将线性进度转换为渐入渐出的曲线
+const easeInOut = (progress: number) => {
+  // 为 easeInOut 曲线定义贝塞尔控制点
+  const p1 = { x: 0.42, y: 0 };
+  const p2 = { x: 0.58, y: 1 };
+
+  // 将线性进度映射到贝塞尔曲线
+  return cubicBezier(p1, p2, progress);
+};
+
 export default function Sort() {
   const [renderChartCtx, setRenderChartCtx] = React.useState({
     frontItem: l[0],
@@ -82,10 +108,12 @@ export default function Sort() {
     // requestAnimationFrame id
     let animateId: number;
     const drawBars = () => {
+      const totalOffset = barWidth + barSpacing;
       // 透明度动画和位移动画没完成时，继续绘制
-      if (alpha < 1 || offset < barWidth + barSpacing) {
+      if (alpha < 1 || offset < totalOffset) {
         alpha += 0.04;
-        offset += 1;
+        const newOffset = easeInOut(offset / totalOffset) * totalOffset;
+        offset += newOffset === 0 ? 1 : newOffset;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         /**
          * 绘制柱形图，规则：
@@ -97,23 +125,23 @@ export default function Sort() {
         list.forEach((value, index) => {
           /**
            * 互换位置的动画：
-           * 在互换时，frontItem 会向后移动 barWidth + barSpacing，backItem 会向前移动 barWidth + barSpacing
-           * 当判断两个元素需要互换时，frontItem 的初始 x 为 最终 x - barWidth - barSpacing，backItem 的初始 x 为 最终 x + barWidth + barSpacing
+           * 在互换时，frontItem 会向后移动 totalOffset，backItem 会向前移动 totalOffset
+           * 当判断两个元素需要互换时，frontItem 的初始 x 为 最终 x - totalOffset，backItem 的初始 x 为 最终 x + totalOffset
            *
            */
-          const finalX = index * (barWidth + barSpacing);
+          const finalX = index * totalOffset;
           const calcX = () => {
             if (
               !renderChartCtx.isSwapping || // 这次绘制不是因为交换位置而触发的
               (value !== renderChartCtx.frontItem && value !== renderChartCtx.backItem) || // 当前柱形不是正在交换位置的两个柱形
-              offset >= barWidth + barSpacing // 交换位置的动画已经完成
+              offset >= totalOffset // 交换位置的动画已经完成
             ) {
               return finalX;
             }
             if (value === renderChartCtx.frontItem) {
-              return finalX - barWidth - barSpacing + offset;
+              return finalX - totalOffset + offset;
             }
-            return finalX + barWidth + barSpacing - offset;
+            return finalX + totalOffset - offset;
           };
           const x = calcX();
           const height = (300 / max) * value - 20;
