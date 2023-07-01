@@ -32,7 +32,7 @@ const useScrollTop = () => {
   return isScrollTop;
 };
 
-const Header = () => {
+const Header = ({ disableScrollTop = false }: { disableScrollTop?: boolean }) => {
   const { dark, toggleDark } = useContext(ThemeContext);
 
   const isScrollTop = useScrollTop();
@@ -40,8 +40,10 @@ const Header = () => {
   return (
     <nav
       className={classnames('h-20 wrapper fixed top-0 z-10 transition-all duration-300 z-30', {
-        ['bg-transparent text-white']: isScrollTop,
-        ['bg-white text-black dark:bg-gray-700 dark:text-white']: !isScrollTop,
+        ['bg-transparent text-white']: disableScrollTop ? false : isScrollTop,
+        ['bg-white text-black dark:bg-gray-700 dark:text-white']: disableScrollTop
+          ? true
+          : !isScrollTop,
       })}
     >
       <div className="w-full max-w-5xl flex justify-end items-center">

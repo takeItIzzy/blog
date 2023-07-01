@@ -9,8 +9,10 @@ import styles from './index.module.css';
 interface LayoutProps {
   children: ReactNode;
   seo: SEO;
-  pageTitle: ReactNode;
+  pageTitle?: ReactNode;
   pageSize?: 'regular' | 'light' | 'thin';
+  showBanner?: boolean;
+  headerDisableScrollTop?: boolean;
 }
 
 const sizeMap = {
@@ -19,7 +21,14 @@ const sizeMap = {
   thin: 'max-w-lg',
 };
 
-const Layout = ({ children, seo, pageTitle, pageSize = 'regular' }: LayoutProps) => {
+const Layout = ({
+  children,
+  seo,
+  pageTitle,
+  pageSize = 'regular',
+  showBanner = true,
+  headerDisableScrollTop = false,
+}: LayoutProps) => {
   return (
     <>
       <Head>
@@ -29,8 +38,8 @@ const Layout = ({ children, seo, pageTitle, pageSize = 'regular' }: LayoutProps)
         <meta name="applicable-device" content="pc,mobile" />
         <meta httpEquiv="Cache-Control" content="no-siteapp,no-transform" />
       </Head>
-      <Header />
-      <Banner title={pageTitle} />
+      <Header disableScrollTop={headerDisableScrollTop} />
+      {showBanner && <Banner title={pageTitle} />}
       <main className="wrapper">
         <div className={`w-full ${styles.mainContainer} ${sizeMap[pageSize]}`}>{children}</div>
       </main>
