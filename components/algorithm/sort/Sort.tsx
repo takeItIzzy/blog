@@ -88,10 +88,10 @@ export default function Sort() {
     // requestAnimationFrame id
     let animateId: number;
     const drawBars = () => {
-      alpha += 0.04;
-      offset += 1;
       // 透明度动画和位移动画没完成时，继续绘制
       if (alpha < 1 || offset < barWidth + barSpacing) {
+        alpha += 0.04;
+        offset += 1;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         /**
          * 绘制柱形图，规则：
