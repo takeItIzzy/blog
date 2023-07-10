@@ -1,5 +1,6 @@
 import React from 'react';
 import Queue from '../queue';
+import RowLayout from '../../RowLayout';
 
 const l = [1, 5, 7, 4, 2, 6, 3];
 
@@ -39,51 +40,67 @@ const easeInOut = (progress: number) => {
 };
 
 export default function Sort() {
-  const [renderChartCtx, setRenderChartCtx] = React.useState({
-    frontItem: l[0],
-    frontItemPrevIndex: 0,
-    frontItemCurrIndex: 0,
-    backItem: l[1],
+  const [renderChartCtx, setRenderChartCtx] = React.useState<{
+    frontItem: number | null;
+    frontItemIndex: number;
+    prevFrontItemIndex: number;
+    backItem: number | null;
+    backItemIndex: number;
+    prevBackItemIndex: number;
+    endPosition: number;
+  }>({
+    frontItem: null,
+    frontItemIndex: -1,
+    prevFrontItemIndex: -1,
+    backItem: null,
+    backItemIndex: -1,
+    prevBackItemIndex: -1,
     endPosition: l.length,
-    isSwapping: false,
   });
   const [list, setList] = React.useState(l);
+  const [isRunning, setIsRunning] = React.useState(false);
+  const [hasRunSort, setHasRunSort] = React.useState(false);
+  const [isStepForward, setIsStepForward] = React.useState<boolean>();
   const canvasRef = React.useRef<HTMLCanvasElement>();
 
-  const sort = () => {
+  const sort = (autoStartQueue = true) => {
     const array = list.concat([]);
     for (let i = 0; i < array.length; i++) {
       for (let j = 0; j < array.length - i - 1; j++) {
-        queue.addQueue(
-          (frontItem, backItem) => {
-            setRenderChartCtx({
-              frontItem,
-              frontItemPrevIndex: j,
-              frontItemCurrIndex: j,
-              backItem,
-              endPosition: array.length - i,
-              isSwapping: false,
-            });
-          },
-          array[j],
-          array[j + 1]
-        );
+        const frontItemIndex = j;
+        const frontItem = array[frontItemIndex];
+        const backItemIndex = j + 1;
+        const backItem = array[backItemIndex];
+        const currentList = [...array];
+        queue.addQueue(() => {
+          setList(currentList);
+          setRenderChartCtx((prev) => ({
+            frontItem,
+            frontItemIndex,
+            prevFrontItemIndex: prev.frontItemIndex,
+            backItem,
+            backItemIndex,
+            prevBackItemIndex: prev.backItemIndex,
+            endPosition: array.length - i,
+          }));
+        }, autoStartQueue);
         if (array[j] > array[j + 1]) {
-          const newList = swap(array, j, j + 1);
-          queue.addQueue(
-            (l) => {
-              setList(l);
-              setRenderChartCtx((prev) => ({
-                ...prev,
-                frontItemPrevIndex: j + 1,
-                isSwapping: true,
-              }));
-            },
-            [...newList]
-          );
+          const newList = [...swap(array, j, j + 1)];
+          queue.addQueue(() => {
+            setList(newList);
+            setRenderChartCtx((prev) => ({
+              ...prev,
+              frontItemIndex: backItemIndex,
+              prevFrontItemIndex: prev.frontItemIndex,
+              backItemIndex: frontItemIndex,
+              prevBackItemIndex: prev.backItemIndex,
+            }));
+          }, autoStartQueue);
         }
       }
     }
+
+    setHasRunSort(true);
   };
 
   React.useEffect(() => {
@@ -131,17 +148,27 @@ export default function Sort() {
            */
           const finalX = index * totalOffset;
           const calcX = () => {
+            const isSwapping = isStepForward
+              ? renderChartCtx.frontItemIndex > renderChartCtx.backItemIndex
+              : renderChartCtx.prevFrontItemIndex > renderChartCtx.prevBackItemIndex;
             if (
-              !renderChartCtx.isSwapping || // 这次绘制不是因为交换位置而触发的
-              (value !== renderChartCtx.frontItem && value !== renderChartCtx.backItem) || // 当前柱形不是正在交换位置的两个柱形
+              !isSwapping || // 当前不是交换位置的动画
+              (index !== renderChartCtx.frontItemIndex && index !== renderChartCtx.backItemIndex) || // 当前柱形不是正在交换位置的两个柱形
               offset >= totalOffset // 交换位置的动画已经完成
             ) {
               return finalX;
             }
-            if (value === renderChartCtx.frontItem) {
+            if (isStepForward) {
+              if (index === renderChartCtx.frontItemIndex) {
+                return finalX - totalOffset + offset;
+              }
+              return finalX + totalOffset - offset;
+            } else {
+              if (index === renderChartCtx.frontItemIndex) {
+                return finalX + totalOffset - offset;
+              }
               return finalX - totalOffset + offset;
             }
-            return finalX + totalOffset - offset;
           };
           const x = calcX();
           const height = (300 / max) * value - 20;
@@ -153,12 +180,15 @@ export default function Sort() {
 
           // 绘制正在比较的两个柱形和已经排序完成的柱形
           if (
-            value === renderChartCtx.frontItem ||
-            value === renderChartCtx.backItem ||
+            index === renderChartCtx.frontItemIndex ||
+            index === renderChartCtx.backItemIndex ||
             index >= renderChartCtx.endPosition
           ) {
             const calcColor = () => {
-              if (value === renderChartCtx.frontItem) {
+              const isSwapping = isStepForward
+                ? renderChartCtx.frontItemIndex > renderChartCtx.backItemIndex
+                : renderChartCtx.prevFrontItemIndex > renderChartCtx.prevBackItemIndex;
+              if (index === renderChartCtx.frontItemIndex) {
                 /**
                  * frontItem, backItem
                  *        👇
@@ -170,14 +200,13 @@ export default function Sort() {
                  * 应该只让新的 backItem 有颜色渐变，而 frontItem 颜色不需要渐变，以体现出 frontItem 未发生变化
                  */
                 return `rgba(100, 149, 237, ${
-                  renderChartCtx.frontItemPrevIndex === renderChartCtx.frontItemCurrIndex ||
-                  renderChartCtx.isSwapping // 交换位置时，不需要渐变
+                  isSwapping || renderChartCtx.prevFrontItemIndex === renderChartCtx.frontItemIndex
                     ? '1'
                     : alpha
                 })`;
               }
-              if (value === renderChartCtx.backItem) {
-                return `rgba(0, 139, 139, ${renderChartCtx.isSwapping ? '1' : alpha})`;
+              if (index === renderChartCtx.backItemIndex) {
+                return `rgba(0, 139, 139, ${isSwapping ? '1' : alpha})`;
               }
               // 已经排序完成的柱形，第一次绘制时有渐变效果，后续绘制时不再有渐变效果
               return `rgba(205, 92, 92, ${index === renderChartCtx.endPosition - 1 ? alpha : '1'})`;
@@ -205,33 +234,63 @@ export default function Sort() {
     animateId = requestAnimationFrame(drawBars);
   }, [
     list,
+    isStepForward,
     renderChartCtx.endPosition,
     renderChartCtx.frontItem,
     renderChartCtx.backItem,
-    renderChartCtx.frontItemPrevIndex,
-    renderChartCtx.frontItemCurrIndex,
-    renderChartCtx.isSwapping,
+    renderChartCtx.frontItemIndex,
+    renderChartCtx.prevFrontItemIndex,
+    renderChartCtx.backItemIndex,
+    renderChartCtx.prevBackItemIndex,
   ]);
 
   return (
     <div className="App">
-      <button onClick={sort}>click</button>&nbsp;
-      <button
-        onClick={() => {
-          setList(l);
-          setRenderChartCtx({
-            frontItem: l[0],
-            frontItemPrevIndex: 0,
-            frontItemCurrIndex: 0,
-            backItem: l[1],
-            endPosition: l.length,
-            isSwapping: false,
-          });
-          queue.reset();
-        }}
-      >
-        reset
-      </button>
+      <RowLayout>
+        <button
+          onClick={() => {
+            isRunning ? queue.stop() : sort();
+            setIsRunning(!isRunning);
+            setIsStepForward(true);
+          }}
+        >
+          {isRunning ? '暂停' : '开始'}
+        </button>
+        <button
+          onClick={() => {
+            !hasRunSort && sort(false);
+            setIsStepForward(true);
+            queue.executeTask();
+          }}
+        >
+          下一步
+        </button>
+        <button
+          onClick={() => {
+            setIsStepForward(false);
+            queue.rollbackTask();
+          }}
+        >
+          上一步
+        </button>
+        <button
+          onClick={() => {
+            setList(l);
+            setRenderChartCtx({
+              frontItem: null,
+              frontItemIndex: -1,
+              prevFrontItemIndex: -1,
+              backItem: null,
+              backItemIndex: -1,
+              prevBackItemIndex: -1,
+              endPosition: l.length,
+            });
+            queue.reset();
+          }}
+        >
+          重置
+        </button>
+      </RowLayout>
       <canvas ref={canvasRef as any} id="canvas" className="bg-white p-4" />
     </div>
   );
