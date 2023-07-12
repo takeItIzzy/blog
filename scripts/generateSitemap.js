@@ -14,7 +14,7 @@ const generateSitemap = async () => {
     .reduce((prev, curr) => {
       // 静态路由
       if (!curr.includes('[')) {
-        const path = page
+        const path = curr
         .replace('pages', '')
         .replace(/(\.tsx|\.ts|\.mdx)/, '')
         .replace('/index', '');
