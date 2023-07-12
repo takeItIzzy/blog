@@ -23,7 +23,9 @@ const generateSitemap = async () => {
 
       // 动态路由，去 /posts 文件夹下读取所有 md 文件名进行填充
       const dynamicRoutes = posts.map((dynamicPage) => {
-        const id = dynamicPage.replace('.md', '');
+        const id = dynamicPage
+          .replace('/posts', '')
+          .replace('.md', '');
         const dynamicPath = curr
           .replace('pages', '')
           .replace('[id]', `${id}`)
