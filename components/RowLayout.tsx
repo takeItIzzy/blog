@@ -32,7 +32,7 @@ const Spacer = (props: SpacerProps) => {
 Spacer.displayName = 'Spacer';
 const Wrapper: React.FC<{ block?: boolean; className?: string; children: React.ReactNode }> = ({
   block,
-  className,
+  className = '',
   children,
 }) => (
   <div className={`${block ? 'flex' : 'inline-flex'} ${className} justify-between items-center`}>
@@ -46,7 +46,7 @@ const LayoutUnit: React.FC<{ justifyContent: 'flex-start' | 'flex-end' }> = ({
 }) => <div className={`flex items-center flex-1 ${justifyContent}`}>{children}</div>;
 
 const RowLayout = (props: RowLayoutProps) => {
-  const { children, className, space = 8, layout, block = false } = props;
+  const { children, className = '', space = 8, layout, block = false } = props;
   const childrenList = React.Children.toArray(children);
   // 为 childrenList 每个元素之间拼接间距
   const resolveSpace = React.useCallback(
@@ -130,7 +130,11 @@ const RowLayout = (props: RowLayoutProps) => {
     };
   }, [childrenList, layout, space]);
   if (layout === undefined) {
-    return <Wrapper>{resolveSpace()}</Wrapper>;
+    return (
+      <Wrapper block={block} className={className}>
+        {resolveSpace()}
+      </Wrapper>
+    );
   }
   const resolvedLayout = resolveLayout();
   return (

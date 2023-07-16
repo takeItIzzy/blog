@@ -1,8 +1,12 @@
 import React from 'react';
 import Queue from '../queue';
-import RowLayout from '../../RowLayout';
+import CodeBlock from '../CodeBlock';
+import CodeScope from '../CodeScope';
+import ButtonGroup from '../ButtonGroup';
 
-const l = [1, 5, 7, 4, 2, 6, 3];
+const l = [1, 9, 5, 7, 4, 8, 2, 6, 3];
+const canvasHeight = 200;
+const canvasWidth = 300;
 
 const queue = new Queue();
 
@@ -57,6 +61,19 @@ export default function Sort() {
     prevBackItemIndex: -1,
     endPosition: l.length,
   });
+  const [codeCtx, setCodeCtx] = React.useState<{
+    activeCodeLineIndex: number;
+    i: number | null;
+    j: number | null;
+    frontItem: number | null;
+    backItem: number | null;
+  }>({
+    activeCodeLineIndex: -1,
+    i: null,
+    j: null,
+    frontItem: null,
+    backItem: null,
+  });
   const [list, setList] = React.useState(l);
   const [isRunning, setIsRunning] = React.useState(false);
   const [hasRunSort, setHasRunSort] = React.useState(false);
@@ -65,13 +82,32 @@ export default function Sort() {
 
   const sort = (autoStartQueue = true) => {
     const array = list.concat([]);
-    for (let i = 0; i < array.length; i++) {
-      for (let j = 0; j < array.length - i - 1; j++) {
+    for (let i = 1; i < array.length; i++) {
+      queue.addQueue(() => {
+        setCodeCtx({
+          activeCodeLineIndex: 2,
+          i,
+          j: null,
+          frontItem: null,
+          backItem: null,
+        });
+      }, autoStartQueue);
+      for (let j = 0; j < array.length - i; j++) {
         const frontItemIndex = j;
         const frontItem = array[frontItemIndex];
         const backItemIndex = j + 1;
         const backItem = array[backItemIndex];
         const currentList = [...array];
+        queue.addQueue(() => {
+          setCodeCtx({
+            activeCodeLineIndex: 3,
+            i,
+            j,
+            frontItem: null,
+            backItem: null,
+          });
+        }, autoStartQueue);
+
         queue.addQueue(() => {
           setList(currentList);
           setRenderChartCtx((prev) => ({
@@ -81,10 +117,28 @@ export default function Sort() {
             backItem,
             backItemIndex,
             prevBackItemIndex: prev.backItemIndex,
-            endPosition: array.length - i,
+            endPosition: array.length - i + 1,
           }));
         }, autoStartQueue);
+        queue.addQueue(() => {
+          setCodeCtx({
+            activeCodeLineIndex: 4,
+            i,
+            j,
+            frontItem,
+            backItem,
+          });
+        }, autoStartQueue);
         if (array[j] > array[j + 1]) {
+          queue.addQueue(() => {
+            setCodeCtx({
+              activeCodeLineIndex: 5,
+              i,
+              j,
+              frontItem,
+              backItem,
+            });
+          }, autoStartQueue);
           const newList = [...swap(array, j, j + 1)];
           queue.addQueue(() => {
             setList(newList);
@@ -101,6 +155,9 @@ export default function Sort() {
     }
 
     setHasRunSort(true);
+    queue.addQueue(() => {
+      setIsRunning(false);
+    });
   };
 
   React.useEffect(() => {
@@ -111,12 +168,12 @@ export default function Sort() {
 
     if (!ctx) return;
 
-    const barWidth = 20;
-    const barSpacing = 8;
+    const barWidth = 24;
+    const barSpacing = 10;
 
     const max = Math.max(...list);
-    canvas.height = 300;
-    canvas.width = 400;
+    canvas.height = canvasHeight;
+    canvas.width = canvasWidth;
 
     // 为正在做比较的两个元素添加着色时的透明度动画
     let alpha = 0;
@@ -171,7 +228,7 @@ export default function Sort() {
             }
           };
           const x = calcX();
-          const height = (300 / max) * value - 20;
+          const height = (canvasHeight / max) * value * 0.92;
           const y = canvas.height - height;
 
           // 先绘制默认颜色的柱形，避免在动画过程中出现空白
@@ -246,8 +303,8 @@ export default function Sort() {
 
   return (
     <div className="App">
-      <RowLayout>
-        <button
+      <ButtonGroup className="mb-4">
+        <ButtonGroup.Button
           onClick={() => {
             isRunning ? queue.stop() : sort();
             setIsRunning(!isRunning);
@@ -255,8 +312,8 @@ export default function Sort() {
           }}
         >
           {isRunning ? '暂停' : '开始'}
-        </button>
-        <button
+        </ButtonGroup.Button>
+        <ButtonGroup.Button
           onClick={() => {
             !hasRunSort && sort(false);
             setIsStepForward(true);
@@ -264,16 +321,16 @@ export default function Sort() {
           }}
         >
           下一步
-        </button>
-        <button
+        </ButtonGroup.Button>
+        <ButtonGroup.Button
           onClick={() => {
             setIsStepForward(false);
             queue.rollbackTask();
           }}
         >
           上一步
-        </button>
-        <button
+        </ButtonGroup.Button>
+        <ButtonGroup.Button
           onClick={() => {
             setList(l);
             setRenderChartCtx({
@@ -285,13 +342,49 @@ export default function Sort() {
               prevBackItemIndex: -1,
               endPosition: l.length,
             });
+            setCodeCtx({
+              i: null,
+              j: null,
+              frontItem: null,
+              backItem: null,
+              activeCodeLineIndex: -1,
+            });
+            setIsRunning(false);
+            setHasRunSort(false);
+            setIsStepForward(undefined);
             queue.reset();
           }}
         >
           重置
-        </button>
-      </RowLayout>
-      <canvas ref={canvasRef as any} id="canvas" className="bg-white p-4" />
+        </ButtonGroup.Button>
+      </ButtonGroup>
+      <div className="flex flex-col md:flex-row">
+        <canvas ref={canvasRef as any} id="canvas" className="bg-white dark:bg-indigo-100 p-4" />
+        <div className="mt-4 ml-0 md:mt-0 md:ml-4 p-4 bg-white w-full dark:bg-indigo-100">
+          <CodeScope variable="i" value={codeCtx.i} />
+          <CodeScope variable="j" value={codeCtx.j} />
+          <CodeScope variable="array[j]" value={codeCtx.frontItem} />
+          <CodeScope variable="array[j + 1]" value={codeCtx.backItem} />
+        </div>
+      </div>
+      <CodeBlock activeLineIndex={codeCtx.activeCodeLineIndex}>
+        {`function bubbleSort1(array) {
+  const n = array.length;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < n - i; j++) {
+      if (array[j] > array[j + 1]) {
+        swap(array, j, j + 1);
+      }
+    }
+  }
+}
+
+function swap(array, a, b) {
+  let temp = array[a];
+  array[a] = array[b];
+  array[b] = temp;
+}`}
+      </CodeBlock>
     </div>
   );
 }
