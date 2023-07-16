@@ -5,7 +5,7 @@ const textColorDark = '#64707d';
 const titleColorDark = '#558';
 
 module.exports = {
-  purge: ['./pages/**/*.tsx', './components/**/*.tsx'],
+  purge: ['pages/**/*.{tsx,mdx}', './components/**/*.tsx'],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
