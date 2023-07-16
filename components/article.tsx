@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import hljs from 'highlight.js';
-import javascript from 'highlight.js/lib/languages/javascript';
-import 'highlight.js/styles/a11y-dark.css';
+import typescript from 'highlight.js/lib/languages/typescript';
+import 'highlight.js/styles/github-dark.css';
 import { MD } from 'types/interfaces';
 import MyLink from 'components/myLink';
 
-hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
 
 const Article = ({ postData }: { postData: MD }) => {
   useEffect(() => {
