@@ -2,7 +2,6 @@ import hljs from 'highlight.js';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github-dark.css';
 import React from 'react';
-import classnames from 'classnames';
 
 hljs.registerLanguage('javascript', javascript);
 
@@ -28,15 +27,9 @@ const CodeBlock = ({ children, activeLineIndex = -1 }: Props) => {
     <pre className="relative">
       <code className="language-js language-javascript">{children}</code>
       <div
-        className={classnames(
-          'absolute transition-transform duration-300 ease-in-out border-2 rounded border-green-500 border-solid h-7 w-11/12',
-          {
-            ['block']: activeLineIndex >= 0,
-            ['hidden']: activeLineIndex < 0,
-            ['top-6']: isMobile.current,
-            ['top-8']: !isMobile.current,
-          }
-        )}
+        className={`absolute transition-transform duration-300 ease-in-out border-2 rounded border-green-500 border-solid h-7 w-11/12 ${
+          activeLineIndex >= 0 ? 'block' : 'hidden'
+        } ${isMobile.current ? 'top-6' : 'top-8'}`}
         style={{ transform: `translateY(${lineHeight.current * activeLineIndex}px)` }}
       />
     </pre>

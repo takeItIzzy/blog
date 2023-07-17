@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import classnames from 'classnames';
 import MyLink from 'components/myLink';
 import LightMode from 'public/icons/light_mode.svg';
 import DarkMode from 'public/icons/dark_mode.svg';
@@ -36,15 +35,15 @@ const Header = ({ disableScrollTop = false }: { disableScrollTop?: boolean }) =>
   const { dark, toggleDark } = useContext(ThemeContext);
 
   const isScrollTop = useScrollTop();
+  console.log(disableScrollTop || !isScrollTop);
 
   return (
     <nav
-      className={classnames('h-20 wrapper fixed top-0 z-10 transition-all duration-300 z-30', {
-        ['bg-transparent text-white']: disableScrollTop ? false : isScrollTop,
-        ['bg-white text-black dark:bg-gray-700 dark:text-white']: disableScrollTop
-          ? true
-          : !isScrollTop,
-      })}
+      className={`h-20 wrapper fixed top-0 transition-all duration-300 z-30 ${
+        disableScrollTop || !isScrollTop
+          ? 'bg-white text-black dark:bg-gray-700 dark:text-white'
+          : 'bg-transparent text-white'
+      }`}
     >
       <div className="w-full max-w-5xl flex justify-end items-center">
         <MyLink href="/" className="pr-4 mr-auto" customColor>
