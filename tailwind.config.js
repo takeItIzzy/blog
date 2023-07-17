@@ -52,6 +52,7 @@ module.exports = {
             code: {
               fontWeight: 300,
               color: themeColorLight,
+              background: 'inherit !important',
             },
           },
         },
@@ -65,6 +66,7 @@ module.exports = {
             code: {
               fontWeight: 300,
               color: themeColorDark,
+              background: 'inherit !important',
             },
             'h1,h2,h3,h4,h5,h6,th': {
               color: titleColorDark,

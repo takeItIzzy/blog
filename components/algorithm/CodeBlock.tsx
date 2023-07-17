@@ -11,7 +11,7 @@ interface Props {
 }
 
 const CodeBlock = ({ children, activeLineIndex = -1 }: Props) => {
-  const lineHeight = React.useRef(28);
+  const lineHeight = React.useRef(25);
   const isMobile = React.useRef(false);
 
   React.useLayoutEffect(() => {
@@ -20,7 +20,7 @@ const CodeBlock = ({ children, activeLineIndex = -1 }: Props) => {
 
   React.useLayoutEffect(() => {
     isMobile.current = window.innerWidth < 1024;
-    lineHeight.current = isMobile.current ? 24 : 28;
+    lineHeight.current = isMobile.current ? 24 : 25;
   });
 
   return (
@@ -29,7 +29,7 @@ const CodeBlock = ({ children, activeLineIndex = -1 }: Props) => {
       <div
         className={`absolute transition-transform duration-300 ease-in-out border-2 rounded border-green-500 border-solid h-7 w-11/12 ${
           activeLineIndex >= 0 ? 'block' : 'hidden'
-        } ${isMobile.current ? 'top-6' : 'top-8'}`}
+        } ${isMobile.current ? 'top-6' : 'top-7'}`}
         style={{ transform: `translateY(${lineHeight.current * activeLineIndex}px)` }}
       />
     </pre>

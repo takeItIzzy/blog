@@ -35,7 +35,6 @@ const Header = ({ disableScrollTop = false }: { disableScrollTop?: boolean }) =>
   const { dark, toggleDark } = useContext(ThemeContext);
 
   const isScrollTop = useScrollTop();
-  console.log(disableScrollTop || !isScrollTop);
 
   return (
     <nav
