@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors');
+
 const redBase = '#d80303';
 const themeColorLight = '#e66107';
 const themeColorDark = '#6f42c1';
@@ -5,7 +7,7 @@ const textColorDark = '#64707d';
 const titleColorDark = '#558';
 
 module.exports = {
-  purge: ['pages/**/*.{tsx,mdx}', './components/**/*.tsx'],
+  content: ['pages/**/*.{tsx,mdx}', './components/**/*.tsx'],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
@@ -18,6 +20,9 @@ module.exports = {
       colors: {
         'red-base': redBase,
         'theme-color-light': themeColorLight,
+        green: colors.emerald,
+        yellow: colors.amber,
+        purple: colors.violet,
       },
       keyframes: {
         'banner-title': {
@@ -70,11 +75,6 @@ module.exports = {
           },
         },
       }),
-    },
-  },
-  variants: {
-    extend: {
-      typography: ['dark'],
     },
   },
   plugins: [require('@tailwindcss/typography')],
