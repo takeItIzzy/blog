@@ -81,9 +81,10 @@ export default function Sort() {
   const canvasRef = React.useRef<HTMLCanvasElement>();
 
   const sort = (autoStartQueue = true) => {
+    const addQueue = (fn: () => void) => queue.addQueue(fn, autoStartQueue);
     const array = list.concat([]);
     for (let i = 1; i < array.length; i++) {
-      queue.addQueue(() => {
+      addQueue(() => {
         setCodeCtx({
           activeCodeLineIndex: 2,
           i,
@@ -91,14 +92,14 @@ export default function Sort() {
           frontItem: null,
           backItem: null,
         });
-      }, autoStartQueue);
+      });
       for (let j = 0; j < array.length - i; j++) {
         const frontItemIndex = j;
         const frontItem = array[frontItemIndex];
         const backItemIndex = j + 1;
         const backItem = array[backItemIndex];
         const currentList = [...array];
-        queue.addQueue(() => {
+        addQueue(() => {
           setCodeCtx({
             activeCodeLineIndex: 3,
             i,
@@ -106,9 +107,9 @@ export default function Sort() {
             frontItem: null,
             backItem: null,
           });
-        }, autoStartQueue);
+        });
 
-        queue.addQueue(() => {
+        addQueue(() => {
           setList(currentList);
           setRenderChartCtx((prev) => ({
             frontItem,
@@ -119,8 +120,8 @@ export default function Sort() {
             prevBackItemIndex: prev.backItemIndex,
             endPosition: array.length - i + 1,
           }));
-        }, autoStartQueue);
-        queue.addQueue(() => {
+        });
+        addQueue(() => {
           setCodeCtx({
             activeCodeLineIndex: 4,
             i,
@@ -128,9 +129,9 @@ export default function Sort() {
             frontItem,
             backItem,
           });
-        }, autoStartQueue);
+        });
         if (array[j] > array[j + 1]) {
-          queue.addQueue(() => {
+          addQueue(() => {
             setCodeCtx({
               activeCodeLineIndex: 5,
               i,
@@ -138,9 +139,9 @@ export default function Sort() {
               frontItem,
               backItem,
             });
-          }, autoStartQueue);
+          });
           const newList = [...swap(array, j, j + 1)];
-          queue.addQueue(() => {
+          addQueue(() => {
             setList(newList);
             setRenderChartCtx((prev) => ({
               ...prev,
@@ -149,13 +150,13 @@ export default function Sort() {
               backItemIndex: frontItemIndex,
               prevBackItemIndex: prev.backItemIndex,
             }));
-          }, autoStartQueue);
+          });
         }
       }
     }
 
     setHasRunSort(true);
-    queue.addQueue(() => {
+    addQueue(() => {
       setIsRunning(false);
     });
   };
