@@ -31,10 +31,10 @@ const CodeBlock = ({ children, activeLineIndex = -1 }: Props) => {
         className={classnames(
           'absolute transition-transform duration-300 ease-in-out border-2 rounded border-green-500 border-solid h-7 w-11/12',
           {
-            block: activeLineIndex >= 0,
-            hidden: activeLineIndex < 0,
-            'top-6': isMobile.current,
-            'top-8': !isMobile.current,
+            ['block']: activeLineIndex >= 0,
+            ['hidden']: activeLineIndex < 0,
+            ['top-6']: isMobile.current,
+            ['top-8']: !isMobile.current,
           }
         )}
         style={{ transform: `translateY(${lineHeight.current * activeLineIndex}px)` }}
